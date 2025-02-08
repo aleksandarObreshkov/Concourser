@@ -4,6 +4,11 @@ import getConfiguration from './pluginConfigFileReader';
 export default class ConcourseYamlDefinitionProvider implements vscode.DefinitionProvider {
     provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
         // Get the word under the cursor
+
+        const line = document.lineAt(position).text
+        if (!line.includes("file")) {
+            return
+        }
         const wordRange = document.getWordRangeAtPosition(position);
         const clickedText = document.getText(wordRange).replace(/['"]/g, ''); // Remove quotes
         let repo = clickedText.substring(0, clickedText.indexOf("/"))
@@ -13,7 +18,8 @@ export default class ConcourseYamlDefinitionProvider implements vscode.Definitio
         //let filePath = vscode.workspace.rootPath ? vscode.Uri.file(vscode.workspace.rootPath + '/' + relativePath) : null;
         let configMap = getConfiguration()
         if (!configMap.has(repo)) {
-            throw Error("Resource root directory is not set in `concourser.config`")
+            vscode.window.showErrorMessage("Resource root directory is not set in `concourser.config`")
+            return
         }
 
         let filePath = vscode.Uri.file(`${configMap.get(repo)}/${relativePath}`)

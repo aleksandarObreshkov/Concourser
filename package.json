@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:concourser.config"
+    "workspaceContains:concourser.config",
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {

@@ -17,7 +17,7 @@ export class HoverProvider implements HoverProvider {
         const envVarName = match[1];
 
         // Get environment variable value
-        const envValue = process.env[envVarName] || 'Not Set';
+        const envValue = process.env[envVarName] ?? 'Not Set';
 
         return new vscode.Hover(`\`${envVarName}\` = \`${envValue}\``);
     }
@@ -28,23 +28,35 @@ export function updateDecorations(editor: vscode.TextEditor) {
     editor.setDecorations(decorationType, [])
 
     const text = editor.document.getText();
+    let lines = text.split("\n") // split with os-wise new line
     const regex = /os\.getenv\(["'](\w+)["']\)/
     let decorations = new Set<vscode.DecorationOptions>()
 
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index];
+        try {
+            decorations.add(resolveEnv(index, regex, line, editor))
+        }
+        catch(e) {
+            console.log(e)
+        }
+    }
+
+    editor.setDecorations(decorationType, Array.from(decorations.values()));
+}
+
+function resolveEnv(lineNumber : number, regex: RegExp, text: string, editor: vscode.TextEditor): vscode.DecorationOptions {
     let match = regex.exec(text);
     if (match == null) {
-        return
+        throw new Error //instead return an empty object somehow
     }
     const envVarName = match[1];
         
     const envValue = process.env[envVarName] ?? 'Not Set';
 
-    const startPos = editor.document.positionAt(match.index);
-    const endPos = editor.document.positionAt(match.index + match[0].length);
-    const range = new vscode.Range(startPos, endPos);
+    const endPos = editor.document.lineAt(lineNumber).range.end; // End of the line
+    const range = new vscode.Range(endPos, endPos); // Keep decoration at the end of the line
 
-    const decoration = { range, renderOptions: { after: { contentText: ` = "${envValue}"`, color: "gray" } } };
-    decorations.add(decoration);
+    return { range, renderOptions: { after: { contentText: ` = "${envValue}"`, color: "gray" } } };
 
-    editor.setDecorations(decorationType, Array.from(decorations.values()));
 }

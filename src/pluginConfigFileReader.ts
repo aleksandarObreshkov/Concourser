@@ -5,13 +5,11 @@ let CONCOURSE_CONFIG: any = null;
 
 export default function getConfiguration(): Map<string, string> {
 
-    // TODO: This could be converted to a singleton later on
-    // if (CONCOURSE_CONFIG == null) {
-    //     CONCOURSE_CONFIG = readConfigFile()
-    // }
+    if (CONCOURSE_CONFIG == null) {
+        CONCOURSE_CONFIG = readConfigFile()
+    }
 
-    // return CONCOURSE_CONFIG
-    return readConfigFile()
+    return CONCOURSE_CONFIG
 }
 
 

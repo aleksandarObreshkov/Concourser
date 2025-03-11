@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { environmentStore } from './environmentStore';
 
 const decorationType = vscode.window.createTextEditorDecorationType({});
 
@@ -17,13 +18,13 @@ export class HoverProvider implements HoverProvider {
         const envVarName = match[1];
 
         // Get environment variable value
-        const envValue = process.env[envVarName] ?? 'Not Set';
+        const envValue = environmentStore.getEnv(envVarName) ?? 'Not Set';
 
         return new vscode.Hover(`\`${envVarName}\` = \`${envValue}\``);
     }
 }
 
-export function updateDecorations(editor: vscode.TextEditor) {
+export function updatePythonDecorations(editor: vscode.TextEditor) {
     if (!editor) return;
     editor.setDecorations(decorationType, [])
 
@@ -52,7 +53,7 @@ function resolveEnv(lineNumber : number, regex: RegExp, text: string, editor: vs
     }
     const envVarName = match[1];
         
-    const envValue = process.env[envVarName] ?? 'Not Set';
+    const envValue = environmentStore.getEnv(envVarName) ?? 'Not Set';
 
     const endPos = editor.document.lineAt(lineNumber).range.end; // End of the line
     const range = new vscode.Range(endPos, endPos); // Keep decoration at the end of the line

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import getConfiguration from './pluginConfigFileReader';
 import { parseFileToYaml } from './yamlResolver';
 
-const resolvedParams = ["file", "SCRIPT_PATH"]
+const resolvedParams = ["file", "SCRIPT_PATH", "run"]
 
 export default class ConcoursePipelineDefinitionProvider implements vscode.DefinitionProvider {
     provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
@@ -16,7 +16,7 @@ export default class ConcoursePipelineDefinitionProvider implements vscode.Defin
         let clickedText = document.getText(wordRange).replace(/['"]/g, ''); // Remove quotes
         let filePath: vscode.Uri
 
-        if (line.includes("SCRIPT_PATH")) {
+        if (line.includes("SCRIPT_PATH") || line.includes("run")) {
             clickedText = clickedText.replaceAll(".", "/")
             clickedText+=".py"
         }

@@ -82,5 +82,9 @@ function getMainPipelinePath() : string{
 		throw new Error("'mainPipelinePath' variable not specified in concourser.json")
 	}
 
-	return mainPipelinePath
+    if (vscode.workspace.workspaceFolders == undefined) {
+        throw new Error("not in a project")
+    }
+    let currentProjectDirectory = vscode.workspace.workspaceFolders[0].uri.fsPath
+	return `${currentProjectDirectory}/${mainPipelinePath}`
 }

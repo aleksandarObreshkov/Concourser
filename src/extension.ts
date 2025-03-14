@@ -2,8 +2,10 @@ import * as vscode from 'vscode';
 import ConcoursePipelineDefinitionProvider, {loadPipelineEnvs} from './concoursePipelineDefinitionProvider';
 import {HoverProvider, updatePythonDecorations} from './pythonEnvironmentResolver';
 import { environmentStore } from './environmentStore';
+import { concourseConfig } from './pluginConfigFileReader';
 
 export function activate(context: vscode.ExtensionContext) {
+	concourseConfig.initialize()
 	let pipelineEnvs = loadPipelineEnvs()
 	environmentStore.initialize(pipelineEnvs)
 

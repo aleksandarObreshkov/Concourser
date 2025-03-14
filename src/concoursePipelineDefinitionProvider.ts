@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import getConfiguration from './pluginConfigFileReader';
+import {concourseConfig} from './pluginConfigFileReader';
 import { parseFileToYaml } from './yamlResolver';
 
 const resolvedParams = ["file", "SCRIPT_PATH", "run"]
@@ -47,21 +47,15 @@ function getFullPathToClickedLine(clickedText: string) {
 
     // Assuming the clicked text is a filename, try to resolve it
     //let filePath = vscode.workspace.rootPath ? vscode.Uri.file(vscode.workspace.rootPath + '/' + relativePath) : null;
-    let configMap = getConfiguration()
-    if (!configMap.has(repo)) {
-        const errorMessage = "Resource root directory is not set in `concourser.json`"
-        vscode.window.showErrorMessage(errorMessage)
-        throw new Error(errorMessage)
-    }
+    let repoPath = concourseConfig.getResource(repo)
 
-
-    return vscode.Uri.file(`${configMap.get(repo)}/${relativePath}`)
+    return vscode.Uri.file(`${repoPath}/${relativePath}`)
 }
 
 export function loadPipelineEnvs() : Map<string, string> {
 	let mainPipelinePath = getMainPipelinePath()
 	let pipeline = parseFileToYaml(mainPipelinePath)
-	let envKey = getConfiguration().get('envKey')
+	let envKey = concourseConfig.getEnvKey()
 	if (envKey == undefined) {
 		throw new Error("'envKey' not defined in concourser.json")
 	}
@@ -76,11 +70,7 @@ export function loadPipelineEnvs() : Map<string, string> {
 }
 
 function getMainPipelinePath() : string{
-	let concourseConfig = getConfiguration()
-	let mainPipelinePath = concourseConfig.get("mainPipeline")
-	if (mainPipelinePath == undefined) {
-		throw new Error("'mainPipelinePath' variable not specified in concourser.json")
-	}
+	let mainPipelinePath = concourseConfig.getMainPipeline()
 
     if (vscode.workspace.workspaceFolders == undefined) {
         throw new Error("not in a project")

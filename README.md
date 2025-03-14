@@ -2,9 +2,10 @@
 Concourser is a VS Code extension that renders your Concourse pipeline files and provides functionalities such as Ctrl + click navigation and environment variable resolution.
 
 ## What this plugin does?
-- enables Ctrl + Click navigation for your `file` properties in your task definitions.
-- enables Ctrl + Click navigation for your `SCRIPT_PATH` environment variables
-- enables Ctrl + Click navigation for your `run` properties inside your task configurations
+- enables Ctrl + Click navigation for:
+  - your `file` properties in your task definitions.
+  - your `SCRIPT_PATH` environment variables
+  - your `run` properties inside your task configurations
 - resolves environment variables for your Python scripts based on the global environment variables, defined in your Concourse pipeline file
 
 ## Configuration
@@ -70,3 +71,4 @@ In order for the extension to work, you need to define a `concourser.json` confi
     }
     ```
     > You need to define all the repos you are using in the `resources` object.
+    > For the plugin to work, verify that VS Code [recognises the files](https://code.visualstudio.com/docs/languages/overview#_change-the-language-for-the-selected-file) as YAML/Python.

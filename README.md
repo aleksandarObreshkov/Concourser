@@ -72,3 +72,8 @@ In order for the extension to work, you need to define a `concourser.json` confi
     ```
     > You need to define all the repos you are using in the `resources` object.
     > For the plugin to work, verify that VS Code [recognises the files](https://code.visualstudio.com/docs/languages/overview#_change-the-language-for-the-selected-file) as YAML/Python.
+
+
+## Download
+
+You can download the plugin from [here](https://drive.google.com/file/d/1m4t-I3WW2MG9FT1dpU6HHyRXALhhQ3-0/view?usp=drive_link).

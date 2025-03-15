@@ -76,4 +76,4 @@ In order for the extension to work, you need to define a `concourser.json` confi
 
 ## Download
 
-You can download the plugin from [here](https://drive.google.com/file/d/1m4t-I3WW2MG9FT1dpU6HHyRXALhhQ3-0/view?usp=drive_link).
+To download the plugin, check the [Releases](https://github.com/aleksandarObreshkov/Concourse-VSCode-Extension/releases) page.

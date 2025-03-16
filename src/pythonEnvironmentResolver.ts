@@ -3,27 +3,6 @@ import { environmentStore } from './environmentStore';
 
 const decorationType = vscode.window.createTextEditorDecorationType({});
 
-export class HoverProvider implements HoverProvider {
-    provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
-        const range = document.getWordRangeAtPosition(position, /os\.getenv\(["']([^"']+)["']\)/);
-        if (!range) {
-            return null;
-        }
-
-        // Extract env variable name
-        const match = document.getText(range).match(/os\.getenv\(["']([^"']+)["']\)/);
-        if (!match || match.length < 2) {
-            return null;
-        }
-        const envVarName = match[1];
-
-        // Get environment variable value
-        const envValue = environmentStore.getEnv(envVarName) ?? 'Not Set';
-
-        return new vscode.Hover(`\`${envVarName}\` = \`${envValue}\``);
-    }
-}
-
 export function updatePythonDecorations(editor: vscode.TextEditor) {
     if (!editor) return;
     editor.setDecorations(decorationType, [])

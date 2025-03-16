@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {concourseConfig} from './pluginConfigFileReader';
-import { parseFileToYaml } from './yamlResolver';
+import { parseFileToYaml, getYamlKey } from './yamlResolver';
 
 const resolvedParams = ["file", "SCRIPT_PATH", "run"]
 
@@ -56,17 +56,14 @@ export function loadPipelineEnvs() : Map<string, string> {
 	let mainPipelinePath = getMainPipelinePath()
 	let pipeline = parseFileToYaml(mainPipelinePath)
 	let envKey = concourseConfig.getEnvKey()
-	if (envKey == undefined) {
-		throw new Error("'envKey' not defined in concourser.json")
-	}
 
-	let pipelineEnvs = pipeline[envKey]
-	let pipelineEnvsMap = new Map()
-	for (let key in pipelineEnvs) {
-		pipelineEnvsMap.set(key, pipelineEnvs[key])
-	}
-
-	return pipelineEnvsMap
+	let pipelineEnvs = getYamlKey(pipeline, envKey)
+    let pipelineEnvsMap = new Map()
+        let pipelineEnvsJson = pipelineEnvs.toJSON()
+        for (const element in pipelineEnvsJson) {
+            pipelineEnvsMap.set(element, pipelineEnvsJson[element])
+        }
+        return pipelineEnvsMap
 }
 
 function getMainPipelinePath() : string{

@@ -1,10 +1,13 @@
 import * as vscode from 'vscode';
 import ConcoursePipelineDefinitionProvider, {loadPipelineEnvs} from './concoursePipelineDefinitionProvider';
-import {HoverProvider, updatePythonDecorations} from './pythonEnvironmentResolver';
+import {updatePythonDecorations} from './pythonEnvironmentResolver';
 import { environmentStore } from './environmentStore';
 import { concourseConfig } from './pluginConfigFileReader';
 
 export function activate(context: vscode.ExtensionContext) {
+	
+	let currentProjectRootPath = getProjectRootPath()
+
 	concourseConfig.initialize()
 	let pipelineEnvs = loadPipelineEnvs()
 	environmentStore.initialize(pipelineEnvs)
@@ -15,8 +18,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
         vscode.languages.registerDefinitionProvider({ scheme: 'file', language: 'yaml' }, new ConcoursePipelineDefinitionProvider()),
-		vscode.languages.registerHoverProvider({scheme: 'file', language: 'python'}, new HoverProvider())
 	);
+
 	vscode.window.onDidChangeActiveTextEditor(editor => {
 		if (!editor) return;
 		if (isPythonFile(editor)) {
@@ -34,6 +37,29 @@ export function activate(context: vscode.ExtensionContext) {
 			updatePythonDecorations(vscode.window.activeTextEditor);
 		} 
     });
+
+	vscode.workspace.onDidSaveTextDocument((document) => {
+        console.log(`File saved: ${document.fileName}`);
+
+		if (document.fileName == `${currentProjectRootPath}/concourser.json`) {
+			concourseConfig.initialize()
+			let pipelineEnvs = loadPipelineEnvs()
+			environmentStore.initialize(pipelineEnvs)
+
+		}
+
+		if (document.fileName === `${currentProjectRootPath}/${concourseConfig.getMainPipeline()}`) {
+			let pipelineEnvs = loadPipelineEnvs()
+			environmentStore.initialize(pipelineEnvs)
+		}
+    });
+}
+
+function getProjectRootPath() {
+	if (vscode.workspace.workspaceFolders == undefined) {
+		throw new Error("Not in a project")
+	}
+	return vscode.workspace.workspaceFolders[0].uri.fsPath
 }
 
 function isPythonFile(editor: vscode.TextEditor) {

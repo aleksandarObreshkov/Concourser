@@ -18,6 +18,7 @@ class EnvironmentStore {
     }
 
     public getEnv(key: string): string | undefined {
+        console.log(this.envMap.get(key))
         return this.envMap.get(key)
     }
 

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {concourseConfig} from './pluginConfigFileReader';
+import {concourseConfig} from './environment/pluginConfigFileReader';
 import { parseFileToYaml, getYamlKey } from './yamlResolver';
 
 const resolvedParams = ["file", "SCRIPT_PATH", "run"]

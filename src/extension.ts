@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
-import ConcoursePipelineDefinitionProvider, {loadPipelineEnvs} from './concoursePipelineDefinitionProvider';
-import {updatePythonDecorations} from './pythonEnvironmentResolver';
-import { environmentStore } from './environmentStore';
-import { concourseConfig } from './pluginConfigFileReader';
+import YamlDefinitionProvider from './yamlDefinitionProvider';
+import { loadPipelineEnvs } from './environment/pipelineEnvironmentLoader';
+import { updatePythonDecorations } from './environment/pythonEnvironmentResolver';
+import { environmentStore } from './environment/environmentStore';
+import { concourseConfig } from './environment/pluginConfigFileReader';
 
 export function activate(context: vscode.ExtensionContext) {
 	
@@ -17,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	context.subscriptions.push(
-        vscode.languages.registerDefinitionProvider({ scheme: 'file', language: 'yaml' }, new ConcoursePipelineDefinitionProvider()),
+        vscode.languages.registerDefinitionProvider({ scheme: 'file', language: 'yaml' }, new YamlDefinitionProvider()),
 	);
 
 	vscode.window.onDidChangeActiveTextEditor(editor => {
@@ -25,14 +26,14 @@ export function activate(context: vscode.ExtensionContext) {
 		if (isPythonFile(editor)) {
 			updatePythonDecorations(editor);
 		}
-		
+
 	});
 
 	vscode.workspace.onDidChangeTextDocument(event => {
 		if (!event.contentChanges.length) return;
-		
-		if (vscode.window.activeTextEditor && 
-			event.document === vscode.window.activeTextEditor.document && 
+
+		if (vscode.window.activeTextEditor &&
+			event.document === vscode.window.activeTextEditor.document &&
 			isPythonFile(vscode.window.activeTextEditor)) {
 			updatePythonDecorations(vscode.window.activeTextEditor);
 		} 

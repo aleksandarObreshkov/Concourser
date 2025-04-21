@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import {concourseConfig} from './environment/pluginConfigFileReader';
 
-const resolvedParams = ["file", "SCRIPT_PATH", "run", "py"]
+const yamlResolvableParams:string[] = ["file"]
+const pythonResolvableParams = ["SCRIPT_PATH", "run", "py"]
 
 export default class YamlDefinitionProvider implements vscode.DefinitionProvider {
     provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
@@ -19,13 +20,10 @@ function resolve(document: vscode.TextDocument, position: vscode.Position) {
     const wordRange = document.getWordRangeAtPosition(position);
     let clickedText = document.getText(wordRange).replace(/['"]/g, ''); // Remove quotes
     let filePath: vscode.Uri
+    let pathToPythonScript = formPathToPythonScript(line, clickedText)
+    
 
-    if (line.includes("SCRIPT_PATH") || line.includes("run") || line.includes("py")) {
-        clickedText = clickedText.replaceAll(".", "/")
-        clickedText+=".py"
-    }
-
-    filePath = getFullPathToClickedLine(clickedText)
+    filePath = getFullPathToClickedLine(pathToPythonScript)
 
     if (filePath) {
         return new vscode.Location(filePath, new vscode.Position(0, 0));
@@ -34,13 +32,28 @@ function resolve(document: vscode.TextDocument, position: vscode.Position) {
     return null;
 }
 
-function isClickedLineResolvable(line: string): boolean {
-    for (const element of resolvedParams) {
+export function isClickedLineResolvable(line: string): boolean {
+    let allParams:string[] = []
+    allParams = pythonResolvableParams.concat(yamlResolvableParams)
+
+    for (const element of allParams) {
         if(line.includes(element)) {
-            return true
+            return true;
         }
-    } 
+    }
     return false;
+}
+
+export function formPathToPythonScript(line: string, clickedText: string) {
+    for(const element of pythonResolvableParams) {
+        if (line.includes(element)) {
+            clickedText = clickedText.replaceAll(".", "/")
+            clickedText+=".py"
+            break
+        }
+    }
+    
+    return clickedText
 }
 
 

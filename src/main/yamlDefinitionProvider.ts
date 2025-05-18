@@ -19,14 +19,16 @@ function resolve(document: vscode.TextDocument, position: vscode.Position) {
     }
     const wordRange = document.getWordRangeAtPosition(position);
     let clickedText = document.getText(wordRange).replace(/['"]/g, ''); // Remove quotes
-    let filePath: vscode.Uri
+    let file: vscode.Uri
     let pathToPythonScript = formPathToPythonScript(line, clickedText)
     
 
-    filePath = getFullPathToClickedLine(pathToPythonScript)
+    let filePath = getFullPathToClickedLine(pathToPythonScript)
+    file = vscode.Uri.file(filePath)
+
 
     if (filePath) {
-        return new vscode.Location(filePath, new vscode.Position(0, 0));
+        return new vscode.Location(file, new vscode.Position(0, 0));
     }
 
     return null;
@@ -57,11 +59,10 @@ export function formPathToPythonScript(line: string, clickedText: string) {
 }
 
 
-function getFullPathToClickedLine(clickedText: string) {
+export function getFullPathToClickedLine(clickedText: string) {
     let repo = clickedText.substring(0, clickedText.indexOf("/"))
-    let relativePath = clickedText.substring(clickedText.indexOf("/"))
+    let relativePath = clickedText.substring(clickedText.indexOf("/")+1)
 
     let repoPath = concourseConfig.getResource(repo)
-
-    return vscode.Uri.file(`${repoPath}/${relativePath}`)
+    return `${repoPath}/${relativePath}`
 }

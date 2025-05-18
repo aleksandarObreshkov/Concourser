@@ -1,5 +1,5 @@
 jest.mock('vscode');
-import {isClickedLineResolvable, formPathToPythonScript} from '../src/yamlDefinitionProvider'
+import {isClickedLineResolvable, formPathToPythonScript} from '../main/yamlDefinitionProvider'
 
 
 describe("tests if the clicked line is resolvable", () => {

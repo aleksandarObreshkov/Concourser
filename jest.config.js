@@ -2,6 +2,6 @@ module.exports = {
     preset: "ts-jest",
     testEnvironment: "node",
     moduleNameMapper: {
-      '^vscode$': '<rootDir>/tests/__mocks__/vscode.js',
+      '^vscode$': '<rootDir>/src/tests/__mocks__/vscode.js',
     }
   };

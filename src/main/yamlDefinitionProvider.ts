@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import {concourseConfig} from './environment/pluginConfigFileReader';
 
-const yamlResolvableParams:string[] = ["file"]
+const yamlResolvableParams:string[] = ["file", "PATH", "FILE"]
 const pythonResolvableParams = ["SCRIPT_PATH", "run", "py"]
 
 export default class YamlDefinitionProvider implements vscode.DefinitionProvider {

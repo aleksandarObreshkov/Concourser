@@ -9,7 +9,10 @@ describe("tests if the clicked line is resolvable", () => {
     ["run: uga_buga", true],
     ["SCRIPT_PATH: file.me.something", true],
     ["hello", false],
-    ["file: somefile/there", true]
+    ["file: somefile/there", true],
+    ["MANIFEST_FILE_PATH", true],
+    ["MY_FILE", true],
+    ["SOME_PATH", true]
   ])("", (line, isResolvable) => {
     expect(isClickedLineResolvable(line)).toEqual(isResolvable);
   });

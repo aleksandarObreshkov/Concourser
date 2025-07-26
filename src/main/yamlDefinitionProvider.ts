@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import {concourseConfig} from './environment/pluginConfigFileReader';
+import { outputChannel } from './outputChannel';
 
 const yamlResolvableParams:string[] = ["file", "PATH", "FILE"]
 const pythonResolvableParams = ["SCRIPT_PATH", "run", "py"]
@@ -13,12 +14,16 @@ export default class YamlDefinitionProvider implements vscode.DefinitionProvider
 function resolve(document: vscode.TextDocument, position: vscode.Position) {
     // Get the word under the cursor
     const line = document.lineAt(position).text
+
+    outputChannel.get().appendLine("Line clicked: "+line)
             
     if (!isClickedLineResolvable(line)) {
         return
     }
     const wordRange = document.getWordRangeAtPosition(position);
     let clickedText = document.getText(wordRange).replace(/['"]/g, ''); // Remove quotes
+    outputChannel.get().appendLine("Clicked line is: "+clickedText)
+
     let file: vscode.Uri
     let pathToPythonScript = formPathToPythonScript(line, clickedText)
     
@@ -62,6 +67,9 @@ export function formPathToPythonScript(line: string, clickedText: string) {
 export function getFullPathToClickedLine(clickedText: string) {
     let repo = clickedText.substring(0, clickedText.indexOf("/"))
     let relativePath = clickedText.substring(clickedText.indexOf("/")+1)
+    outputChannel.get().appendLine("Repo is: "+repo)
+    outputChannel.get().appendLine("Relative path is: "+relativePath)
+
 
     let repoPath = concourseConfig.getResource(repo)
     return `${repoPath}/${relativePath}`

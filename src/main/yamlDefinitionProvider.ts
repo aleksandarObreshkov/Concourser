@@ -22,7 +22,7 @@ function resolve(document: vscode.TextDocument, position: vscode.Position) {
     }
     const wordRange = document.getWordRangeAtPosition(position);
     let clickedText = document.getText(wordRange).replace(/['"]/g, ''); // Remove quotes
-    outputChannel.get().appendLine("Clicked line is: "+clickedText)
+    outputChannel.get().appendLine("Clicked text is: "+clickedText)
 
     let file: vscode.Uri
     let pathToPythonScript = formPathToPythonScript(line, clickedText)

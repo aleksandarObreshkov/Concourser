@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
+import { outputChannel } from '../outputChannel';
 
 export class ConcourserConfiguration {
     private static instance: ConcourserConfiguration;
@@ -34,6 +35,13 @@ export class ConcourserConfiguration {
 
     public getResource(resource: string): string {
         let resources = this.envMap.get('resources')
+        
+        if (resources instanceof Object) {
+            new Map(Object.entries(resources)).forEach((value, key) => {
+                outputChannel.get().appendLine(`Resource key: ${key}, Resource value: ${value}`)
+            })
+        }
+
         if (resources === undefined) {
             throw new Error("'resources' not present in concourser.json")
         }

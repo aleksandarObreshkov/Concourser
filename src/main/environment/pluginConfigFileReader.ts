@@ -62,6 +62,18 @@ export class ConcourserConfiguration {
     
         let config = JSON.parse(configFileContent)
         this.envMap = new Map(Object.entries(config))
+        this.envMap.forEach((value, key) => {
+                if (value instanceof Object) {
+                    let mapString = ""
+                    new Map(Object.entries(value)).forEach((objectValue, objectKey) => {
+                        mapString+=`\t key: ${objectKey}, value: ${objectValue}\n`
+                    })
+                    outputChannel.get().appendLine(`Initialized environment variable key: ${key}, value: \n${mapString}`)
+                }
+                else {
+                    outputChannel.get().appendLine(`Initialized environment variable key: ${key}, value: ${value}`)
+                }
+            })
     }
 }
 

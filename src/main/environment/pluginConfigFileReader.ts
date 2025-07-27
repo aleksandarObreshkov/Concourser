@@ -35,7 +35,8 @@ export class ConcourserConfiguration {
 
     public getResource(resource: string): string {
         let resources = this.envMap.get('resources')
-        
+        outputChannel.get().appendLine(`Resource to use is: ${resource}`)
+
         if (resources instanceof Object) {
             new Map(Object.entries(resources)).forEach((value, key) => {
                 outputChannel.get().appendLine(`Resource key: ${key}, Resource value: ${value}`)

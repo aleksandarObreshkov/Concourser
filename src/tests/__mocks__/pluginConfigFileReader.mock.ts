@@ -1,6 +1,3 @@
-import * as fs from 'fs';
-import * as vscode from 'vscode';
-
 export class ConcourserConfiguration {
     private static instance: ConcourserConfiguration;
     private envMap: Map<string, any>;
